@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Hub</title>
+
+    <!-- 
+        ========================================================================
+        ★ RECURSOS EXTERNOS
+        ========================================================================
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Dancing+Script:wght@600&family=Lora:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ========================================================================
+           ★ SISTEMA DE DISEÑO (CSS VARIABLES)
+           ========================================================================
+        */
+        :root {
+            /* Colores Base */
+            --bg-color: #050510;
+            --card-bg: rgba(20, 24, 40, 0.65);
+            --modal-bg: rgba(15, 19, 30, 0.95);
+
+            /* Tipografía */
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0b0;
+            --accent-color: #ffd700;
+
+            /* Componentes Interactivos */
+            --button-bg: rgba(255, 255, 255, 0.05);
+            --button-hover: rgba(255, 255, 255, 0.15);
+            --button-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.3);
+
+            /* Utilitarios */
+            --blur-strength: 12px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ========================================================================
+           ★ FONDO ESTRELLADO (CANVAS)
+           ========================================================================
+        */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ========================================================================
+           ★ CONTENEDOR PRINCIPAL (HUB)
+           ========================================================================
+        */
+        .hub-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 20px 20px 80px 20px;
+            /* Padding inferior extra para el footer */
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn 1.5s ease forwards 0.5s;
+        }
+
+        /* Sección de Perfil */
+        .profile-section {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--blur-strength));
+            -webkit-backdrop-filter: blur(var(--blur-strength));
+            padding: 40px 20px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: transform var(--transition-speed);
+        }
+
+        .avatar-frame {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            padding: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar-frame::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid #00f0ff;
+            box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+            animation: spinBorder 4s linear infinite;
+            border-top-color: transparent;
+            border-left-color: transparent;
+        }
+
+        .avatar-frame::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid #00f0ff;
+            opacity: 0.3;
+        }
+
+        @keyframes spinBorder {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-color);
+            background-color: #1a1a2e;
+            position: relative;
+            z-index: 2;
+            transition: opacity 0.3s ease;
+        }
+
+        .name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        .bio {
+            font-family: 'Lora', serif;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        /* Contenedor de Enlaces */
+        .links-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 16px 24px;
+            background-color: var(--button-bg);
+            border: 1px solid var(--button-border);
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-3px) scale(1.02);
+            border-color: var(--btn-color, rgba(255, 255, 255, 0.3));
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2), 0 0 15px var(--btn-color, rgba(255, 255, 255, 0.1));
+            color: #fff;
+        }
+
+        .link-btn:hover .btn-icon,
+        .link-btn:hover .btn-text {
+            color: var(--btn-color, #fff);
+            text-shadow: 0 0 10px var(--btn-color, rgba(255, 255, 255, 0.5));
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .btn-text {
+            flex-grow: 1;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-arrow {
+            opacity: 0.5;
+            font-size: 0.8rem;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .link-btn:hover .btn-arrow {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            font-family: 'Lora', serif;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .name {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* ========================================================================
+           ★ MUSIC PLAYER WIDGET
+           ========================================================================
+        */
+        .music-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 30px;
+            padding: 8px 15px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .music-widget:hover {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+            border-color: rgba(0, 240, 255, 0.6);
+        }
+
+        .music-disc {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #00f0ff, #ff00de, #00f0ff);
+            margin-right: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spinDisc 3s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .music-disc::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .music-widget.playing .music-disc {
+            animation-play-state: running;
+        }
+
+        .music-controls {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .music-title {
+            font-size: 0.7rem;
+            color: #ccc;
+            margin-bottom: 2px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .music-status {
+            font-size: 0.6rem;
+            color: #00f0ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Ocultar el iframe de YouTube */
+        #youtube-player {
+            display: none;
+        }
+
+        @keyframes spinDisc {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .music-widget {
+                bottom: 15px;
+                left: 15px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FONDO ESTRELLADO -->
+    <canvas id="starfield"></canvas>
+
+
+
+    <!-- MUSIC PLAYER WIDGET -->
+    <div class="music-widget" id="musicWidget" onclick="app.toggleMusic()">
+        <div class="music-disc"></div>
+        <div class="music-controls">
+            <span class="music-title">Leo's Selection</span>
+            <span class="music-status" id="musicStatus">PAUSED</span>
+        </div>
+    </div>
+    <div id="youtube-player"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="hub-container" id="hub-root">
+        <!-- El contenido se inyecta vía JS -->
+    </main>
+
+
+
+    <script>
+        /**
+         * ========================================================================
+         * ★ LÓGICA DE LA APLICACIÓN (HUB PERSONAL)
+         * Maneja el estado, renderizado, configuración y persistencia local.
+         * ========================================================================
+         */
+
+        const app = {
+            // Configuración por defecto (Fallback)
+            defaultData: {
+                nombre: "Leonel E. Rodriguez",
+                // START: Local Photo Configuration
+                photoStatic: "./assets/images/avatar.jpg",
+                photoAnimated: "./assets/images/avatar02.jpg", // Use same for now until an animated file is provided
+                // END: Local Photo Configuration
+
+                musicVideoId: "j4Wq42Hyxxo", // YouTube Video ID
+
+                bio: "Creative Developer | Content Creator",
+                enlaces: [{
+                    titulo: "Github",
+                    url: "https://github.com/theastrobruh",
+                    icono: "💻",
+                    color: "#00f0ff"
+                },
+                {
+                    titulo: "LinkedIn",
+                    url: "https://www.linkedin.com/in/leonel-e-rodr%C3%ADguez-s-66390335b/",
+                    icono: "💼",
+                    color: "#0077b5"
+                },
+                {
+                    titulo: "Instagram",
+                    url: "https://instagram.com/leonelo.jpg",
+                    icono: "📸",
+                    color: "#ff0069"
+                },
+                {
+                    titulo: "WhatsApp",
+                    url: "https://wa.me/1234567890",
+                    icono: "💬",
+                    color: "#00ff88"
+                },
+                {
+                    titulo: "Spotify Playlist",
+                    url: "https://open.spotify.com/user/12155453649",
+                    icono: "🎵",
+                    color: "#1ed760"
+                },
+                {
+                    titulo: "Contáctame",
+                    url: "the.astro.repo@gmail.com",
+                    icono: "✉️",
+                    color: "#ffae00"
+                }
+                ],
+                footer: "© 2026 - theAstroBruh"
+            },
+
+            /**
+             * Inicializa la aplicación cargando datos y renderizando.
+             */
+            init() {
+                this.data = this.defaultData;
+                this.render();
+                this.initStars();
+                this.initAvatarHover();
+            },
+
+            /**
+             * Renderiza la vista principal del Hub.
+             */
+            render() {
+                const container = document.getElementById('hub-root');
+
+                // Generar HTML de botones
+                const linksHtml = this.data.enlaces.map(link => `
+                    <a href="${link.url}" class="link-btn" target="_blank" rel="noopener noreferrer" style="--btn-color: ${link.color}">
+                        <span class="btn-icon">${link.icono}</span>
+                        <span class="btn-text">${link.titulo}</span>
+                        <span class="btn-arrow">➔</span>
+                    </a>
+                `).join('');
+
+                // Inyectar HTML
+                container.innerHTML = `
+                    <section class="profile-section">
+                        <div class="avatar-frame">
+                            <img src="${this.data.photoStatic}" alt="${this.data.nombre}" class="avatar" id="profileAvatar" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <h1 class="name">${this.data.nombre}</h1>
+                        <p class="bio">${this.data.bio}</p>
+                    </section>
+
+                    <div class="links-container">
+                        ${linksHtml}
+                    </div>
+
+                    <footer>${this.data.footer}</footer>
+                `;
+            },
+
+            /**
+             * Maneja la lógica de hover para el avatar (Estático <-> Animado)
+             */
+            initAvatarHover() {
+                const avatar = document.getElementById('profileAvatar');
+                if (!avatar) return;
+
+                const staticSrc = this.data.photoStatic;
+                const animatedSrc = this.data.photoAnimated;
+
+                // Preload animated image/gif to prevent lag
+                const preloadImg = new Image();
+                preloadImg.src = animatedSrc;
+
+                // Desktop Hover
+                avatar.addEventListener('mouseenter', () => {
+                    avatar.src = animatedSrc;
+                });
+
+                avatar.addEventListener('mouseleave', () => {
+                    avatar.src = staticSrc;
+                });
+
+                // Mobile Touch (Tap to toggle or hold)
+                avatar.addEventListener('touchstart', (e) => {
+                    avatar.src = animatedSrc;
+                }, {
+                    passive: true
+                });
+
+                avatar.addEventListener('touchend', () => {
+                    setTimeout(() => {
+                        avatar.src = staticSrc;
+                    }, 300); // Small delay for better UX on tap
+                });
+            },
+
+            /* --- EFECTOS VISUALES (STARS) --- */
+            initStars() {
+                const canvas = document.getElementById('starfield');
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                let stars = [];
+                let shootingStars = [];
+
+                const resize = () => {
+                    width = window.innerWidth;
+                    height = window.innerHeight;
+                    canvas.width = width;
+                    canvas.height = height;
+                };
+
+                class Star {
+                    constructor() {
+                        this.reset();
+                        this.y = Math.random() * height;
+                    }
+                    reset() {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        this.size = Math.random() * 2;
+                        this.blinkSpeed = 0.02 + Math.random() * 0.05;
+                        this.opacity = Math.random();
+                        this.direction = Math.random() > 0.5 ? 1 : -1;
+                    }
+                    update() {
+                        this.opacity += this.blinkSpeed * this.direction;
+                        if (this.opacity >= 1 || this.opacity <= 0.2) this.direction *= -1;
+                        this.y -= 0.05;
+                        if (this.y < 0) this.y = height;
+                    }
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                        ctx.fill();
+                    }
+                }
+
+                class ShootingStar {
+                    constructor() {
+                        this.reset();
+                    }
+                    reset() {
+                        this.x = Math.random() * width;
+                        this.y = 0;
+                        this.length = 70 + Math.random() * 80;
+                        this.speed = 4 + Math.random() * 3;
+                        this.active = false;
+                        this.timer = Math.random() * 400;
+                    }
+                    update() {
+                        if (this.active) {
+                            this.x -= this.speed;
+                            this.y += this.speed;
+                            if (this.x < 0 || this.y > height) {
+                                this.active = false;
+                                this.reset();
+                            }
+                        } else {
+                            this.timer--;
+                            if (this.timer <= 0) {
+                                this.active = true;
+                                this.x = width / 2 + Math.random() * width / 2;
+                                this.y = -50;
+                            }
+                        }
+                    }
+                    draw() {
+                        if (!this.active) return;
+                        const gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.length, this.y - this.length);
+                        gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+                        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y);
+                        ctx.lineTo(this.x + this.length, this.y - this.length);
+                        ctx.strokeStyle = gradient;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                }
+
+                resize();
+                for (let i = 0; i < 150; i++) stars.push(new Star());
+                shootingStars.push(new ShootingStar());
+                shootingStars.push(new ShootingStar());
+
+                const animate = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    stars.forEach(s => {
+                        s.update();
+                        s.draw();
+                    });
+                    shootingStars.forEach(s => {
+                        s.update();
+                        s.draw();
+                    });
+                    requestAnimationFrame(animate);
+                };
+
+                window.addEventListener('resize', () => {
+                    resize();
+                    stars.forEach(s => s.reset());
+                });
+                animate();
+            },
+
+            /* --- MÚSICA (YOUTUBE API) --- */
+            player: null,
+            isPlaying: false,
+
+            initMusic() {
+                // Cargar API de YouTube
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                const firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+                // Callback global de YouTube
+                window.onYouTubeIframeAPIReady = () => {
+                    this.player = new YT.Player('youtube-player', {
+                        height: '0',
+                        width: '0',
+                        videoId: this.data.musicVideoId,
+                        playerVars: {
+                            'autoplay': 0,
+                            'controls': 0,
+                            'disablekb': 1,
+                            'fs': 0,
+                            'loop': 1,
+                            'playlist': this.data.musicVideoId // Necesario para el loop
+                        },
+                        events: {
+                            'onReady': (event) => {
+                                // Jugador listo
+                                // event.target.setVolume(50); 
+                            },
+                            'onStateChange': (event) => {
+                                if (event.data === YT.PlayerState.PLAYING) {
+                                    this.isPlaying = true;
+                                    this.updateMusicUI();
+                                } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                                    this.isPlaying = false;
+                                    this.updateMusicUI();
+                                }
+                            }
+                        }
+                    });
+                };
+            },
+
+            toggleMusic() {
+                if (!this.player || typeof this.player.getPlayerState !== 'function') return;
+
+                if (this.isPlaying) {
+                    this.player.pauseVideo();
+                } else {
+                    this.player.playVideo();
+                }
+            },
+
+            updateMusicUI() {
+                const widget = document.getElementById('musicWidget');
+                const status = document.getElementById('musicStatus');
+
+                if (this.isPlaying) {
+                    widget.classList.add('playing');
+                    status.textContent = "PLAYING";
+                    status.style.color = "#00f0ff";
+                } else {
+                    widget.classList.remove('playing');
+                    status.textContent = "PAUSED";
+                    status.style.color = "#888";
+                }
+            }
+        };
+
+        // Iniciar App
+        app.init();
+        app.initMusic(); // Iniciar listener de música
+    </script>
+</body>
+
+</html>
