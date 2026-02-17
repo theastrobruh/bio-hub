@@ -281,6 +281,91 @@
         }
 
         /* ========================================================================
+           ★ SKILLS SECTION
+           ========================================================================
+        */
+        .skills-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .skills-toggle-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        .skills-wrapper {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+            margin-top: 0;
+            text-align: left;
+            width: 100%;
+        }
+
+        .skills-wrapper.open {
+            max-height: 1000px;
+            /* Arbitrary large height for transition */
+            opacity: 1;
+            margin-top: 20px;
+        }
+
+        .skill-category {
+            margin-bottom: 20px;
+        }
+
+        .skill-category h3 {
+            font-size: 0.9rem;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .skill-item {
+            margin-bottom: 12px;
+        }
+
+        .skill-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+
+        .skill-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .skill-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f0ff, #ff00de);
+            width: 0;
+            /* Animated via JS */
+            border-radius: 3px;
+            transition: width 1s ease-out;
+        }
+
+        /* ========================================================================
            ★ MUSIC PLAYER WIDGET
            ========================================================================
         */
@@ -459,7 +544,27 @@
                     color: "#ffae00"
                 }
                 ],
-                footer: "© 2026 - theAstroBruh"
+                footer: "© 2026 - theAstroBruh",
+
+                // SKILLS DATA
+                skills: {
+                    "Design & Video Edition": [
+                        { name: "Adobe Photoshop", level: 8, max: 10 },
+                        { name: "Adobe Premier", level: 7, max: 10 },
+                        { name: "Adobe After Effects", level: 5, max: 5 }, // Normalized to 100% logic
+                        { name: "Sony Vegas", level: 8, max: 10 }
+                    ],
+                    "Coding": [
+                        { name: "HTML", level: 7, max: 10 },
+                        { name: "CSS", level: 5, max: 10 },
+                        { name: "JS", level: 5, max: 10 }
+                    ],
+                    "AI": [
+                        { name: "LLM Models (Gemini, GPT, DeepSeek)", level: 7, max: 10 },
+                        { name: "Image Models (Flux, Image Turbo, Gemini PRO)", level: 10, max: 10 },
+                        { name: "Video Models (QWEN, VEO, GENIE)", level: 5, max: 10 }
+                    ]
+                }
             },
 
             /**
@@ -495,6 +600,16 @@
                         </div>
                         <h1 class="name">${this.data.nombre}</h1>
                         <p class="bio">${this.data.bio}</p>
+
+                        <!-- SKILLS SECTION BUTTON -->
+                        <button class="skills-toggle-btn" onclick="app.toggleSkills()">
+                            View Skills
+                        </button>
+
+                        <!-- SKILLS DROPDOWN -->
+                        <div class="skills-wrapper" id="skillsWrapper">
+                            ${this.renderSkills()}
+                        </div>
                     </section>
 
                     <div class="links-container">
@@ -503,6 +618,58 @@
 
                     <footer>${this.data.footer}</footer>
                 `;
+            },
+
+            /**
+             * Genera el HTML de las skills.
+             */
+            renderSkills() {
+                let html = '';
+                for (const [category, items] of Object.entries(this.data.skills)) {
+                    html += `<div class="skill-category"><h3>${category}</h3>`;
+                    items.forEach(skill => {
+                        const percent = (skill.level / skill.max) * 100;
+                        html += `
+                            <div class="skill-item">
+                                <div class="skill-info">
+                                    <span>${skill.name}</span>
+                                    <span>${skill.level}/${skill.max}</span>
+                                </div>
+                                <div class="skill-bar-bg">
+                                    <div class="skill-bar-fill" style="width: 0%" data-width="${percent}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+                return html;
+            },
+
+            /**
+             * Alterna la visibilidad de las skills y anima las barras.
+             */
+            toggleSkills() {
+                const wrapper = document.getElementById('skillsWrapper');
+                const btn = document.querySelector('.skills-toggle-btn');
+
+                if (wrapper.classList.contains('open')) {
+                    wrapper.classList.remove('open');
+                    btn.textContent = "View Skills";
+                    // Reset bars for next animation
+                    const bars = wrapper.querySelectorAll('.skill-bar-fill');
+                    bars.forEach(bar => bar.style.width = '0%');
+                } else {
+                    wrapper.classList.add('open');
+                    btn.textContent = "Hide Skills";
+                    // Animate bars
+                    setTimeout(() => {
+                        const bars = wrapper.querySelectorAll('.skill-bar-fill');
+                        bars.forEach(bar => {
+                            bar.style.width = bar.getAttribute('data-width');
+                        });
+                    }, 100); // Slight delay to ensure transition works
+                }
             },
 
             /**
