@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Hub</title>
+    <title>Personal Hub | Bio-Link</title>
+    <meta name="description" content="Personal Hub & Portfolio Link in Bio">
 
     <!-- 
         ========================================================================
@@ -16,6 +17,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Dancing+Script:wght@600&family=Lora:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
         rel="stylesheet">
+    
+    <!-- Iconos para botones (opcional, usando caracteres unicode por defecto) -->
 
     <style>
         /* ========================================================================
@@ -25,23 +28,26 @@
         :root {
             /* Colores Base */
             --bg-color: #050510;
-            --card-bg: rgba(20, 24, 40, 0.65);
+            --card-bg: rgba(20, 24, 40, 0.75);
             --modal-bg: rgba(15, 19, 30, 0.95);
 
             /* Tipografía */
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0b0;
-            --accent-color: #ffd700;
+            
+            /* Colores de Acento */
+            --accent-cyan: #00f0ff;  /* Color principal del Avatar */
+            --accent-magenta: #ff00de;
+            --accent-gold: #ffd700;
 
             /* Componentes Interactivos */
             --button-bg: rgba(255, 255, 255, 0.05);
             --button-hover: rgba(255, 255, 255, 0.15);
             --button-border: rgba(255, 255, 255, 0.1);
-            --input-bg: rgba(0, 0, 0, 0.3);
 
             /* Utilitarios */
             --blur-strength: 12px;
-            --transition-speed: 0.3s;
+            --transition-speed: 0.4s;
         }
 
         * {
@@ -84,29 +90,42 @@
         .hub-container {
             width: 100%;
             max-width: 480px;
-            padding: 20px 20px 80px 20px;
-            /* Padding inferior extra para el footer */
+            padding: 20px 20px 80px 20px; /* Espacio extra para scroll */
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
             opacity: 0;
-            animation: fadeIn 1.5s ease forwards 0.5s;
+            animation: fadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.3s;
         }
 
         /* Sección de Perfil */
         .profile-section {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             width: 100%;
             background: var(--card-bg);
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
-            padding: 40px 20px;
+            padding: 40px 25px;
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 240, 255, 0.1); /* Sutil borde azul */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             transition: transform var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efecto de brillo en el borde superior */
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0.5;
         }
 
         .avatar-frame {
@@ -119,17 +138,15 @@
             z-index: 1;
         }
 
+        /* Anillos giratorios del avatar */
         .avatar-frame::before {
             content: '';
             position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
             border-radius: 50%;
-            border: 2px solid #00f0ff;
-            box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
-            animation: spinBorder 4s linear infinite;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 15px var(--accent-cyan);
+            animation: spinBorder 6s linear infinite;
             border-top-color: transparent;
             border-left-color: transparent;
         }
@@ -137,23 +154,18 @@
         .avatar-frame::after {
             content: '';
             position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
+            top: -8px; left: -8px; right: -8px; bottom: -8px;
             border-radius: 50%;
-            border: 2px solid #00f0ff;
-            opacity: 0.3;
+            border: 1px solid var(--accent-magenta);
+            opacity: 0.4;
+            animation: spinBorder 10s linear infinite reverse;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
         }
 
         @keyframes spinBorder {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .avatar {
@@ -161,7 +173,7 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--bg-color);
+            border: 2px solid var(--bg-color);
             background-color: #1a1a2e;
             position: relative;
             z-index: 2;
@@ -170,10 +182,10 @@
 
         .name {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem;
+            font-size: 2rem;
             margin-bottom: 8px;
             color: #fff;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
             letter-spacing: 1px;
         }
 
@@ -181,17 +193,20 @@
             font-family: 'Lora', serif;
             font-size: 0.95rem;
             color: var(--text-secondary);
-            line-height: 1.5;
+            line-height: 1.6;
             max-width: 90%;
             margin: 0 auto;
         }
 
-        /* Contenedor de Enlaces */
+        /* ========================================================================
+           ★ BOTONES Y ENLACES
+           ========================================================================
+        */
         .links-container {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .link-btn {
@@ -199,10 +214,10 @@
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            padding: 16px 24px;
+            padding: 16px 20px;
             background-color: var(--button-bg);
             border: 1px solid var(--button-border);
-            border-radius: 16px;
+            border-radius: 12px;
             text-decoration: none;
             color: var(--text-primary);
             font-weight: 500;
@@ -212,104 +227,88 @@
             overflow: hidden;
         }
 
+        /* Hover effect para enlaces */
         .link-btn:hover {
             background-color: var(--button-hover);
-            transform: translateY(-3px) scale(1.02);
+            transform: translateX(5px);
             border-color: var(--btn-color, rgba(255, 255, 255, 0.3));
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2), 0 0 15px var(--btn-color, rgba(255, 255, 255, 0.1));
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0,0,0,0.2);
             color: #fff;
         }
-
-        .link-btn:hover .btn-icon,
-        .link-btn:hover .btn-text {
-            color: var(--btn-color, #fff);
-            text-shadow: 0 0 10px var(--btn-color, rgba(255, 255, 255, 0.5));
+        
+        .link-btn:hover::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 4px;
+            background-color: var(--btn-color);
+            box-shadow: 0 0 10px var(--btn-color);
         }
 
         .btn-icon {
-            font-size: 1.2rem;
-            width: 30px;
-            text-align: center;
+            font-size: 1.3rem;
+            width: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-text {
             flex-grow: 1;
-            text-align: center;
+            text-align: left;
+            padding-left: 10px;
+            font-family: 'Montserrat', sans-serif;
             letter-spacing: 0.5px;
-        }
-
-        .btn-arrow {
-            opacity: 0.5;
-            font-size: 0.8rem;
-            transition: transform 0.3s, opacity 0.3s;
-        }
-
-        .link-btn:hover .btn-arrow {
-            opacity: 1;
-            transform: translateX(3px);
         }
 
         /* Footer */
         footer {
             margin-top: 40px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
-            opacity: 0.6;
-            font-family: 'Lora', serif;
-            font-style: italic;
+            opacity: 0.5;
+            font-family: 'Orbitron', sans-serif;
             text-align: center;
+            letter-spacing: 2px;
         }
 
-        /* Animaciones */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .name {
-                font-size: 1.8rem;
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ========================================================================
-           ★ SKILLS SECTION
+           ★ SECCIÓN "ABOUT ME" / SKILLS
            ========================================================================
         */
         .skills-toggle-btn {
-            background: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid var(--accent-cyan); /* Color Cyan */
+            color: var(--accent-cyan);
+            padding: 10px 24px;
+            border-radius: 50px;
             cursor: pointer;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            margin-top: 15px;
+            font-size: 0.85rem;
+            margin-top: 20px;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             display: inline-block;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
         }
 
         .skills-toggle-btn:hover {
-            background: var(--accent-color);
+            background: var(--accent-cyan);
             color: #000;
-            box-shadow: 0 0 15px var(--accent-color);
+            box-shadow: 0 0 20px var(--accent-cyan);
+            font-weight: 700;
         }
 
         .skills-wrapper {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            transition: max-height 0.6s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease;
             opacity: 0;
             margin-top: 0;
             text-align: left;
@@ -318,26 +317,37 @@
 
         .skills-wrapper.open {
             max-height: 1000px;
-            /* Arbitrary large height for transition */
             opacity: 1;
-            margin-top: 20px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         .skill-category {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .skill-category h3 {
-            font-size: 0.9rem;
-            color: #fff;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: var(--accent-magenta);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
             font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+        }
+
+        .skill-category h3::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin-left: 10px;
         }
 
         .skill-item {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .skill-info {
@@ -345,120 +355,153 @@
             justify-content: space-between;
             font-size: 0.8rem;
             color: #ccc;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            font-weight: 500;
         }
 
+        /* ESTILO BATERÍA PARA LAS BARRAS
+           Usamos gradientes repetidos para simular bloques
+        */
         .skill-bar-bg {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* Rejilla de fondo para los espacios vacíos */
+        .skill-bar-bg::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(90deg, 
+                transparent 0%, transparent 90%, 
+                var(--bg-color) 90%, var(--bg-color) 100%
+            );
+            background-size: 10% 100%; /* 10 bloques */
+            z-index: 1;
+            pointer-events: none;
         }
 
         .skill-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00f0ff, #ff00de);
-            width: 0;
-            /* Animated via JS */
-            border-radius: 3px;
-            transition: width 1s ease-out;
+            background: linear-gradient(90deg, var(--accent-cyan), #00a8ff);
+            width: 0; /* Animado via JS */
+            position: relative;
+            z-index: 0;
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 10px var(--accent-cyan);
         }
 
         /* ========================================================================
-           ★ MUSIC PLAYER WIDGET
+           ★ MUSIC PLAYER WIDGET (Minimalista)
            ========================================================================
         */
         .music-widget {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 25px;
+            left: 25px;
             z-index: 1000;
             display: flex;
             align-items: center;
-            background: rgba(10, 10, 20, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            border-radius: 30px;
-            padding: 8px 15px;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-            transition: all 0.3s ease;
+            background: rgba(10, 10, 20, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px; /* Redondo completo al inicio */
+            padding: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
+            width: 44px; /* Ancho inicial: solo el disco */
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* Estado expandido (cuando se hace click/play) */
+        .music-widget.expanded {
+            width: 220px; /* Ancho suficiente para texto */
+            background: rgba(10, 10, 20, 0.9);
+            border-color: var(--accent-cyan);
+            padding-right: 20px;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
         }
 
         .music-widget:hover {
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
-            border-color: rgba(0, 240, 255, 0.6);
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .music-disc {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
+            min-width: 32px; /* Evita aplastamiento */
             border-radius: 50%;
-            background: conic-gradient(from 0deg, #00f0ff, #ff00de, #00f0ff);
-            margin-right: 10px;
+            background: conic-gradient(from 0deg, #222, #555, #222);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             animation: spinDisc 3s linear infinite;
             animation-play-state: paused;
+            border: 2px solid #111;
         }
 
-        .music-disc::after {
+        /* Centro del disco */
+        .music-disc::before {
             content: '';
-            width: 8px;
-            height: 8px;
-            background: #000;
+            width: 10px; height: 10px;
+            background: var(--accent-cyan);
             border-radius: 50%;
             position: absolute;
         }
 
         .music-widget.playing .music-disc {
+            background: conic-gradient(from 0deg, var(--accent-cyan), var(--accent-magenta), var(--accent-cyan));
             animation-play-state: running;
+            box-shadow: 0 0 10px var(--accent-cyan);
         }
 
         .music-controls {
             display: flex;
             flex-direction: column;
+            margin-left: 12px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease 0.1s; /* Retraso ligero */
+        }
+
+        .music-widget.expanded .music-controls {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .music-title {
-            font-size: 0.7rem;
-            color: #ccc;
-            margin-bottom: 2px;
-            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
         }
 
         .music-status {
             font-size: 0.6rem;
-            color: #00f0ff;
-            text-transform: uppercase;
+            color: var(--accent-cyan);
+            font-family: 'Orbitron', sans-serif;
             letter-spacing: 1px;
         }
 
-        /* Ocultar el iframe de YouTube */
-        #youtube-player {
-            display: none;
-        }
+        #youtube-player { display: none; }
 
         @keyframes spinDisc {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
-            .music-widget {
-                bottom: 15px;
-                left: 15px;
-                padding: 6px 12px;
-            }
+            .music-widget { bottom: 20px; left: 20px; }
+            .name { font-size: 1.6rem; }
+            .link-btn { padding: 14px 18px; }
         }
     </style>
 </head>
@@ -468,131 +511,90 @@
     <!-- FONDO ESTRELLADO -->
     <canvas id="starfield"></canvas>
 
-
-
     <!-- MUSIC PLAYER WIDGET -->
-    <div class="music-widget" id="musicWidget" onclick="app.toggleMusic()">
+    <!-- Inicialmente compacto, se expande con clase .expanded -->
+    <div class="music-widget" id="musicWidget" onclick="app.toggleMusicInteraction()">
         <div class="music-disc"></div>
         <div class="music-controls">
-            <span class="music-title">Leo's Selection</span>
-            <span class="music-status" id="musicStatus">PAUSED</span>
+            <span class="music-title">Lofi Chill Beats</span>
+            <span class="music-status" id="musicStatus">Click to Play</span>
         </div>
     </div>
+    
+    <!-- Contenedor API Youtube -->
     <div id="youtube-player"></div>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="hub-container" id="hub-root">
-        <!-- El contenido se inyecta vía JS -->
+        <!-- Inyección JS -->
     </main>
-
-
 
     <script>
         /**
          * ========================================================================
-         * ★ LÓGICA DE LA APLICACIÓN (HUB PERSONAL)
-         * Maneja el estado, renderizado, configuración y persistencia local.
+         * ★ LÓGICA DE LA APLICACIÓN
          * ========================================================================
          */
 
         const app = {
-            // Configuración por defecto (Fallback)
-            defaultData: {
+            data: {
                 nombre: "Leonel E. Rodriguez",
-                // START: Local Photo Configuration
                 photoStatic: "./assets/images/avatar.jpg",
-                photoAnimated: "./assets/images/avatar02.jpg", // Use same for now until an animated file is provided
-                // END: Local Photo Configuration
-
-                musicVideoId: "j4Wq42Hyxxo", // YouTube Video ID
+                photoAnimated: "./assets/images/avatar02.jpg", 
+                
+                // ID del video de YouTube (ej: Chill Lofi)
+                musicVideoId: "jfKfPfyJRdk", 
 
                 bio: "Creative Developer | Content Creator",
-                enlaces: [{
-                    titulo: "Github",
-                    url: "https://github.com/theastrobruh",
-                    icono: "💻",
-                    color: "#00f0ff"
-                },
-                {
-                    titulo: "LinkedIn",
-                    url: "https://www.linkedin.com/in/leonel-e-rodr%C3%ADguez-s-66390335b/",
-                    icono: "💼",
-                    color: "#0077b5"
-                },
-                {
-                    titulo: "Instagram",
-                    url: "https://instagram.com/leonelo.jpg",
-                    icono: "📸",
-                    color: "#ff0069"
-                },
-                {
-                    titulo: "WhatsApp",
-                    url: "https://wa.me/1234567890",
-                    icono: "💬",
-                    color: "#00ff88"
-                },
-                {
-                    titulo: "Spotify Playlist",
-                    url: "https://open.spotify.com/user/12155453649",
-                    icono: "🎵",
-                    color: "#1ed760"
-                },
-                {
-                    titulo: "Contáctame",
-                    url: "the.astro.repo@gmail.com",
-                    icono: "✉️",
-                    color: "#ffae00"
-                }
+                
+                // Redes Sociales
+                enlaces: [
+                    { titulo: "Github", url: "https://github.com/theastrobruh", icono: "💻", color: "#00f0ff" },
+                    { titulo: "LinkedIn", url: "https://www.linkedin.com/in/leonel-e-rodr%C3%ADguez-s-66390335b/", icono: "💼", color: "#0077b5" },
+                    { titulo: "Instagram", url: "https://instagram.com/leonelo.jpg", icono: "📸", color: "#e1306c" },
+                    { titulo: "WhatsApp", url: "https://wa.me/1234567890", icono: "💬", color: "#25d366" },
+                    { titulo: "Spotify Playlist", url: "https://open.spotify.com/user/12155453649", icono: "🎵", color: "#1ed760" },
+                    { titulo: "Contáctame", url: "mailto:the.astro.repo@gmail.com", icono: "✉️", color: "#ffae00" }
                 ],
                 footer: "© 2026 - theAstroBruh",
 
-                // SKILLS DATA
+                // SKILLS CONFIG
                 skills: {
-                    "Design & Video Edition": [
+                    "Design & Video": [
                         { name: "Adobe Photoshop", level: 8, max: 10 },
                         { name: "Adobe Premier", level: 7, max: 10 },
-                        { name: "Adobe After Effects", level: 5, max: 5 }, // Normalized to 100% logic
+                        { name: "Adobe After Effects", level: 5, max: 10 }, // CORREGIDO A 10
                         { name: "Sony Vegas", level: 8, max: 10 }
                     ],
-                    "Coding": [
-                        { name: "HTML", level: 7, max: 10 },
-                        { name: "CSS", level: 5, max: 10 },
-                        { name: "JS", level: 5, max: 10 }
+                    "Coding Stack": [
+                        { name: "HTML5 / CSS3", level: 7, max: 10 },
+                        { name: "JavaScript (ES6+)", level: 4, max: 10 },
+                        { name: "Python", level: 7, max: 10 }
                     ],
-                    "AI": [
-                        { name: "LLM Models (Gemini, GPT, DeepSeek)", level: 7, max: 10 },
-                        { name: "Image Models (Flux, Image Turbo, Gemini PRO)", level: 10, max: 10 },
-                        { name: "Video Models (QWEN, VEO, GENIE)", level: 5, max: 10 }
+                    "AI Engineering": [
+                        { name: "LLM (Gemini, GPT)", level: 8, max: 10 },
+                        { name: "Image Gen (Flux, NanoBanana, ImageTurbo, MJ)", level: 10, max: 10 }
                     ]
                 }
             },
 
-            /**
-             * Inicializa la aplicación cargando datos y renderizando.
-             */
             init() {
-                this.data = this.defaultData;
                 this.render();
                 this.initStars();
                 this.initAvatarHover();
             },
 
-            /**
-             * Renderiza la vista principal del Hub.
-             */
             render() {
                 const container = document.getElementById('hub-root');
-
-                // Generar HTML de botones
+                
                 const linksHtml = this.data.enlaces.map(link => `
                     <a href="${link.url}" class="link-btn" target="_blank" rel="noopener noreferrer" style="--btn-color: ${link.color}">
-                        <span class="btn-icon">${link.icono}</span>
-                        <span class="btn-text">${link.titulo}</span>
-                        <span class="btn-arrow">➔</span>
+                        <div class="btn-icon">${link.icono}</div>
+                        <div class="btn-text">${link.titulo}</div>
+                        <div style="opacity:0.5; font-size:0.8rem">➔</div>
                     </a>
                 `).join('');
 
-                // Inyectar HTML
                 container.innerHTML = `
                     <section class="profile-section">
                         <div class="avatar-frame">
@@ -601,13 +603,15 @@
                         <h1 class="name">${this.data.nombre}</h1>
                         <p class="bio">${this.data.bio}</p>
 
-                        <!-- SKILLS SECTION BUTTON -->
-                        <button class="skills-toggle-btn" onclick="app.toggleSkills()">
-                            View Skills
+                        <!-- UPDATED BUTTON: ABOUT ME -->
+                        <button class="skills-toggle-btn" onclick="app.toggleSkills(this)">
+                            About Me
                         </button>
 
-                        <!-- SKILLS DROPDOWN -->
                         <div class="skills-wrapper" id="skillsWrapper">
+                            <p style="margin-bottom:20px; font-size:0.9rem; color:#ccc; line-height:1.6;">
+                                Soy un apasionado por la tecnología y el arte digital. Aquí puedes ver mi stack técnico y herramientas de uso diario.
+                            </p>
                             ${this.renderSkills()}
                         </div>
                     </section>
@@ -620,9 +624,6 @@
                 `;
             },
 
-            /**
-             * Genera el HTML de las skills.
-             */
             renderSkills() {
                 let html = '';
                 for (const [category, items] of Object.entries(this.data.skills)) {
@@ -636,6 +637,7 @@
                                     <span>${skill.level}/${skill.max}</span>
                                 </div>
                                 <div class="skill-bar-bg">
+                                    <!-- La clase skill-bar-fill tiene el gradiente -->
                                     <div class="skill-bar-fill" style="width: 0%" data-width="${percent}%"></div>
                                 </div>
                             </div>
@@ -646,76 +648,49 @@
                 return html;
             },
 
-            /**
-             * Alterna la visibilidad de las skills y anima las barras.
-             */
-            toggleSkills() {
+            toggleSkills(btnElement) {
                 const wrapper = document.getElementById('skillsWrapper');
-                const btn = document.querySelector('.skills-toggle-btn');
-
+                
                 if (wrapper.classList.contains('open')) {
                     wrapper.classList.remove('open');
-                    btn.textContent = "View Skills";
-                    // Reset bars for next animation
+                    btnElement.textContent = "About Me";
+                    // Reset bars
                     const bars = wrapper.querySelectorAll('.skill-bar-fill');
                     bars.forEach(bar => bar.style.width = '0%');
                 } else {
                     wrapper.classList.add('open');
-                    btn.textContent = "Hide Skills";
+                    btnElement.textContent = "Close Bio";
                     // Animate bars
                     setTimeout(() => {
                         const bars = wrapper.querySelectorAll('.skill-bar-fill');
                         bars.forEach(bar => {
                             bar.style.width = bar.getAttribute('data-width');
                         });
-                    }, 100); // Slight delay to ensure transition works
+                    }, 100);
                 }
             },
 
-            /**
-             * Maneja la lógica de hover para el avatar (Estático <-> Animado)
-             */
             initAvatarHover() {
                 const avatar = document.getElementById('profileAvatar');
                 if (!avatar) return;
-
                 const staticSrc = this.data.photoStatic;
                 const animatedSrc = this.data.photoAnimated;
+                
+                // Preload
+                const img = new Image(); img.src = animatedSrc;
 
-                // Preload animated image/gif to prevent lag
-                const preloadImg = new Image();
-                preloadImg.src = animatedSrc;
-
-                // Desktop Hover
-                avatar.addEventListener('mouseenter', () => {
-                    avatar.src = animatedSrc;
-                });
-
-                avatar.addEventListener('mouseleave', () => {
-                    avatar.src = staticSrc;
-                });
-
-                // Mobile Touch (Tap to toggle or hold)
-                avatar.addEventListener('touchstart', (e) => {
-                    avatar.src = animatedSrc;
-                }, {
-                    passive: true
-                });
-
-                avatar.addEventListener('touchend', () => {
-                    setTimeout(() => {
-                        avatar.src = staticSrc;
-                    }, 300); // Small delay for better UX on tap
-                });
+                avatar.parentElement.addEventListener('mouseenter', () => avatar.src = animatedSrc);
+                avatar.parentElement.addEventListener('mouseleave', () => avatar.src = staticSrc);
+                avatar.parentElement.addEventListener('touchstart', () => avatar.src = animatedSrc, {passive: true});
+                avatar.parentElement.addEventListener('touchend', () => setTimeout(() => avatar.src = staticSrc, 300));
             },
 
-            /* --- EFECTOS VISUALES (STARS) --- */
+            /* --- STARFIELD BACKGROUND --- */
             initStars() {
                 const canvas = document.getElementById('starfield');
                 const ctx = canvas.getContext('2d');
                 let width, height;
                 let stars = [];
-                let shootingStars = [];
 
                 const resize = () => {
                     width = window.innerWidth;
@@ -725,137 +700,62 @@
                 };
 
                 class Star {
-                    constructor() {
-                        this.reset();
-                        this.y = Math.random() * height;
-                    }
+                    constructor() { this.reset(); this.y = Math.random() * height; }
                     reset() {
                         this.x = Math.random() * width;
                         this.y = Math.random() * height;
-                        this.size = Math.random() * 2;
-                        this.blinkSpeed = 0.02 + Math.random() * 0.05;
+                        this.size = Math.random() * 1.5;
+                        this.speed = Math.random() * 0.5 + 0.1;
                         this.opacity = Math.random();
-                        this.direction = Math.random() > 0.5 ? 1 : -1;
                     }
                     update() {
-                        this.opacity += this.blinkSpeed * this.direction;
-                        if (this.opacity >= 1 || this.opacity <= 0.2) this.direction *= -1;
-                        this.y -= 0.05;
-                        if (this.y < 0) this.y = height;
+                        this.y -= this.speed;
+                        if (this.y < 0) this.reset();
                     }
                     draw() {
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                         ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
                         ctx.fill();
                     }
                 }
 
-                class ShootingStar {
-                    constructor() {
-                        this.reset();
-                    }
-                    reset() {
-                        this.x = Math.random() * width;
-                        this.y = 0;
-                        this.length = 70 + Math.random() * 80;
-                        this.speed = 4 + Math.random() * 3;
-                        this.active = false;
-                        this.timer = Math.random() * 400;
-                    }
-                    update() {
-                        if (this.active) {
-                            this.x -= this.speed;
-                            this.y += this.speed;
-                            if (this.x < 0 || this.y > height) {
-                                this.active = false;
-                                this.reset();
-                            }
-                        } else {
-                            this.timer--;
-                            if (this.timer <= 0) {
-                                this.active = true;
-                                this.x = width / 2 + Math.random() * width / 2;
-                                this.y = -50;
-                            }
-                        }
-                    }
-                    draw() {
-                        if (!this.active) return;
-                        const gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.length, this.y - this.length);
-                        gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
-                        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-                        ctx.beginPath();
-                        ctx.moveTo(this.x, this.y);
-                        ctx.lineTo(this.x + this.length, this.y - this.length);
-                        ctx.strokeStyle = gradient;
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                    }
-                }
-
                 resize();
-                for (let i = 0; i < 150; i++) stars.push(new Star());
-                shootingStars.push(new ShootingStar());
-                shootingStars.push(new ShootingStar());
+                for(let i=0; i<100; i++) stars.push(new Star());
 
-                const animate = () => {
+                function animate() {
                     ctx.clearRect(0, 0, width, height);
-                    stars.forEach(s => {
-                        s.update();
-                        s.draw();
-                    });
-                    shootingStars.forEach(s => {
-                        s.update();
-                        s.draw();
-                    });
+                    stars.forEach(s => { s.update(); s.draw(); });
                     requestAnimationFrame(animate);
-                };
-
-                window.addEventListener('resize', () => {
-                    resize();
-                    stars.forEach(s => s.reset());
-                });
+                }
+                
+                window.addEventListener('resize', resize);
                 animate();
             },
 
-            /* --- MÚSICA (YOUTUBE API) --- */
+            /* --- MUSIC PLAYER --- */
             player: null,
             isPlaying: false,
 
             initMusic() {
-                // Cargar API de YouTube
                 const tag = document.createElement('script');
                 tag.src = "https://www.youtube.com/iframe_api";
-                const firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                const firstScript = document.getElementsByTagName('script')[0];
+                firstScript.parentNode.insertBefore(tag, firstScript);
 
-                // Callback global de YouTube
                 window.onYouTubeIframeAPIReady = () => {
                     this.player = new YT.Player('youtube-player', {
-                        height: '0',
-                        width: '0',
+                        height: '0', width: '0',
                         videoId: this.data.musicVideoId,
-                        playerVars: {
-                            'autoplay': 0,
-                            'controls': 0,
-                            'disablekb': 1,
-                            'fs': 0,
-                            'loop': 1,
-                            'playlist': this.data.musicVideoId // Necesario para el loop
-                        },
+                        playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': this.data.musicVideoId },
                         events: {
-                            'onReady': (event) => {
-                                // Jugador listo
-                                // event.target.setVolume(50); 
-                            },
-                            'onStateChange': (event) => {
-                                if (event.data === YT.PlayerState.PLAYING) {
+                            'onStateChange': (e) => {
+                                if (e.data === YT.PlayerState.PLAYING) {
                                     this.isPlaying = true;
-                                    this.updateMusicUI();
-                                } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                                    this.updateMusicUI(true);
+                                } else if (e.data === YT.PlayerState.PAUSED) {
                                     this.isPlaying = false;
-                                    this.updateMusicUI();
+                                    this.updateMusicUI(false);
                                 }
                             }
                         }
@@ -863,36 +763,50 @@
                 };
             },
 
-            toggleMusic() {
-                if (!this.player || typeof this.player.getPlayerState !== 'function') return;
-
-                if (this.isPlaying) {
-                    this.player.pauseVideo();
-                } else {
-                    this.player.playVideo();
+            // Lógica de click en el widget
+            toggleMusicInteraction() {
+                const widget = document.getElementById('musicWidget');
+                
+                // Si está colapsado, expandir primero (UX)
+                if (!widget.classList.contains('expanded')) {
+                    widget.classList.add('expanded');
+                    // Opcional: Auto-play al expandir? 
+                    // this.player.playVideo(); 
+                    // Por ahora solo expande, el segundo click reproduce.
+                    return; 
                 }
+
+                // Si ya está expandido, toggle play/pause
+                this.toggleAudio();
             },
 
-            updateMusicUI() {
+            toggleAudio() {
+                if (!this.player || typeof this.player.getPlayerState !== 'function') return;
+                this.isPlaying ? this.player.pauseVideo() : this.player.playVideo();
+            },
+
+            updateMusicUI(playing) {
                 const widget = document.getElementById('musicWidget');
                 const status = document.getElementById('musicStatus');
-
-                if (this.isPlaying) {
+                
+                if (playing) {
                     widget.classList.add('playing');
-                    status.textContent = "PLAYING";
+                    widget.classList.add('expanded'); // Forzar expansión al tocar
+                    status.textContent = "LISTENING NOW";
                     status.style.color = "#00f0ff";
                 } else {
                     widget.classList.remove('playing');
                     status.textContent = "PAUSED";
                     status.style.color = "#888";
+                    
+                    // Opcional: Colapsar automáticamente después de unos segundos si se pausa
+                    // setTimeout(() => { if(!this.isPlaying) widget.classList.remove('expanded'); }, 3000);
                 }
             }
         };
 
-        // Iniciar App
         app.init();
-        app.initMusic(); // Iniciar listener de música
+        app.initMusic();
     </script>
 </body>
-
 </html>
