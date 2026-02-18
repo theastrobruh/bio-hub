@@ -17,8 +17,6 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Dancing+Script:wght@600&family=Lora:ital,wght@0,400;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
         rel="stylesheet">
-    
-    <!-- Iconos para botones (opcional, usando caracteres unicode por defecto) -->
 
     <style>
         /* ========================================================================
@@ -34,9 +32,10 @@
             /* Tipografía */
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0b0;
-            
+
             /* Colores de Acento */
-            --accent-cyan: #00f0ff;  /* Color principal del Avatar */
+            --accent-cyan: #00f0ff;
+            /* Color principal del Avatar */
             --accent-magenta: #ff00de;
             --accent-gold: #ffd700;
 
@@ -90,7 +89,8 @@
         .hub-container {
             width: 100%;
             max-width: 480px;
-            padding: 20px 20px 80px 20px; /* Espacio extra para scroll */
+            padding: 20px 20px 80px 20px;
+            /* Espacio extra para scroll */
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -109,7 +109,8 @@
             -webkit-backdrop-filter: blur(var(--blur-strength));
             padding: 40px 25px;
             border-radius: 24px;
-            border: 1px solid rgba(0, 240, 255, 0.1); /* Sutil borde azul */
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            /* Sutil borde azul */
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             transition: transform var(--transition-speed);
             position: relative;
@@ -128,6 +129,8 @@
             opacity: 0.5;
         }
 
+        /* ★ MEJORA DE AVATAR (RESPONSIVE GLOW)
+        */
         .avatar-frame {
             width: 120px;
             height: 120px;
@@ -138,14 +141,19 @@
             z-index: 1;
         }
 
-        /* Anillos giratorios del avatar */
+        /* Anillos giratorios del avatar - Ajustado para ser más visible */
         .avatar-frame::before {
             content: '';
             position: absolute;
-            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
             border-radius: 50%;
-            border: 2px solid var(--accent-cyan);
-            box-shadow: 0 0 15px var(--accent-cyan);
+            /* Borde más grueso para móviles */
+            border: 3px solid var(--accent-cyan); 
+            /* Brillo más intenso */
+            box-shadow: 0 0 20px var(--accent-cyan), inset 0 0 10px var(--accent-cyan);
             animation: spinBorder 6s linear infinite;
             border-top-color: transparent;
             border-left-color: transparent;
@@ -154,18 +162,28 @@
         .avatar-frame::after {
             content: '';
             position: absolute;
-            top: -8px; left: -8px; right: -8px; bottom: -8px;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
             border-radius: 50%;
-            border: 1px solid var(--accent-magenta);
-            opacity: 0.4;
+            border: 2px solid var(--accent-magenta);
+            opacity: 0.6; /* Mayor opacidad */
             animation: spinBorder 10s linear infinite reverse;
             border-top-color: transparent;
             border-bottom-color: transparent;
+            /* Sutil brillo magenta */
+            box-shadow: 0 0 15px rgba(255, 0, 222, 0.3);
         }
 
         @keyframes spinBorder {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .avatar {
@@ -232,14 +250,16 @@
             background-color: var(--button-hover);
             transform: translateX(5px);
             border-color: var(--btn-color, rgba(255, 255, 255, 0.3));
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0,0,0,0.2);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2);
             color: #fff;
         }
-        
+
         .link-btn:hover::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            bottom: 0;
             width: 4px;
             background-color: var(--btn-color);
             box-shadow: 0 0 10px var(--btn-color);
@@ -273,8 +293,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ========================================================================
@@ -283,7 +310,8 @@
         */
         .skills-toggle-btn {
             background: rgba(0, 240, 255, 0.05);
-            border: 1px solid var(--accent-cyan); /* Color Cyan */
+            border: 1px solid var(--accent-cyan);
+            /* Color Cyan */
             color: var(--accent-cyan);
             padding: 10px 24px;
             border-radius: 50px;
@@ -320,7 +348,7 @@
             opacity: 1;
             margin-top: 25px;
             padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .skill-category {
@@ -342,7 +370,7 @@
             content: '';
             flex-grow: 1;
             height: 1px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             margin-left: 10px;
         }
 
@@ -376,12 +404,15 @@
         .skill-bar-bg::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: linear-gradient(90deg, 
-                transparent 0%, transparent 90%, 
-                var(--bg-color) 90%, var(--bg-color) 100%
-            );
-            background-size: 10% 100%; /* 10 bloques */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(90deg,
+                    transparent 0%, transparent 90%,
+                    var(--bg-color) 90%, var(--bg-color) 100%);
+            background-size: 10% 100%;
+            /* 10 bloques */
             z-index: 1;
             pointer-events: none;
         }
@@ -389,7 +420,8 @@
         .skill-bar-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--accent-cyan), #00a8ff);
-            width: 0; /* Animado via JS */
+            width: 0;
+            /* Animado via JS */
             position: relative;
             z-index: 0;
             transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
@@ -409,19 +441,22 @@
             align-items: center;
             background: rgba(10, 10, 20, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50px; /* Redondo completo al inicio */
+            border-radius: 50px;
+            /* Redondo completo al inicio */
             padding: 5px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
-            width: 44px; /* Ancho inicial: solo el disco */
+            width: 44px;
+            /* Ancho inicial: solo el disco */
             overflow: hidden;
             white-space: nowrap;
         }
 
         /* Estado expandido (cuando se hace click/play) */
         .music-widget.expanded {
-            width: 220px; /* Ancho suficiente para texto */
+            width: 220px;
+            /* Ancho suficiente para texto */
             background: rgba(10, 10, 20, 0.9);
             border-color: var(--accent-cyan);
             padding-right: 20px;
@@ -436,7 +471,8 @@
         .music-disc {
             width: 32px;
             height: 32px;
-            min-width: 32px; /* Evita aplastamiento */
+            min-width: 32px;
+            /* Evita aplastamiento */
             border-radius: 50%;
             background: conic-gradient(from 0deg, #222, #555, #222);
             position: relative;
@@ -451,7 +487,8 @@
         /* Centro del disco */
         .music-disc::before {
             content: '';
-            width: 10px; height: 10px;
+            width: 10px;
+            height: 10px;
             background: var(--accent-cyan);
             border-radius: 50%;
             position: absolute;
@@ -469,7 +506,8 @@
             margin-left: 12px;
             opacity: 0;
             transform: translateX(-10px);
-            transition: all 0.3s ease 0.1s; /* Retraso ligero */
+            transition: all 0.3s ease 0.1s;
+            /* Retraso ligero */
         }
 
         .music-widget.expanded .music-controls {
@@ -491,17 +529,38 @@
             letter-spacing: 1px;
         }
 
-        #youtube-player { display: none; }
+        #youtube-player {
+            display: none;
+        }
 
         @keyframes spinDisc {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 600px) {
-            .music-widget { bottom: 20px; left: 20px; }
-            .name { font-size: 1.6rem; }
-            .link-btn { padding: 14px 18px; }
+            .music-widget {
+                bottom: 20px;
+                left: 20px;
+            }
+
+            .name {
+                font-size: 1.6rem;
+            }
+
+            .link-btn {
+                padding: 14px 18px;
+            }
+
+            /* Aseguramos que el avatar destaque más en móvil */
+            .avatar-frame {
+                margin-bottom: 25px;
+            }
         }
     </style>
 </head>
@@ -520,7 +579,7 @@
             <span class="music-status" id="musicStatus">Click to Play</span>
         </div>
     </div>
-    
+
     <!-- Contenedor API Youtube -->
     <div id="youtube-player"></div>
 
@@ -540,13 +599,13 @@
             data: {
                 nombre: "Leonel E. Rodriguez",
                 photoStatic: "./assets/images/avatar.jpg",
-                photoAnimated: "./assets/images/avatar02.jpg", 
-                
-                // ID del video de YouTube (ej: Chill Lofi)
-                musicVideoId: "jfKfPfyJRdk", 
+                photoAnimated: "./assets/images/avatar02.jpg",
 
-                bio: "Creative Developer | Content Creator",
-                
+                // ID del video de YouTube (ej: Chill Lofi)
+                musicVideoId: "jfKfPfyJRdk",
+
+                bio: "ENFJ | Web Designer | Content Creator",
+
                 // Redes Sociales
                 enlaces: [
                     { titulo: "Github", url: "https://github.com/theastrobruh", icono: "💻", color: "#00f0ff" },
@@ -562,21 +621,23 @@
                 skills: {
                     "Design & Video": [
                         { name: "Adobe Photoshop", level: 8, max: 10 },
-                        { name: "Adobe Premier", level: 7, max: 10 },
-                        { name: "Adobe After Effects", level: 5, max: 10 }, // CORREGIDO A 10
+                        { name: "Adobe Premier", level: 6, max: 10 },
+                        { name: "Adobe After Effects", level: 6, max: 10 },
                         { name: "Sony Vegas", level: 8, max: 10 }
                     ],
                     "Coding Stack": [
-                        { name: "HTML5 / CSS3", level: 7, max: 10 },
-                        { name: "JavaScript (ES6+)", level: 4, max: 10 },
-                        { name: "Python", level: 7, max: 10 }
+                        { name: "HTML5 / CSS3", level: 5, max: 10 },
+                        { name: "JavaScript (ES6+)", level: 5, max: 10 },
+                        { name: "Python", level: 6, max: 10 }
                     ],
                     "AI Engineering": [
-                        { name: "LLM (Gemini, GPT)", level: 8, max: 10 },
-                        { name: "Image Gen (Flux, NanoBanana, ImageTurbo, MJ)", level: 10, max: 10 }
+                        { name: "LLM (Gemini, GPT, Kimi, CLaude, DeepSeek)", level: 8, max: 10 },
+                        { name: "Image Gen (Flux, NanoBanana, ImageTurbo, MJ)", level: 9, max: 10 }
                     ]
                 }
             },
+
+            interactionTimer: null, // Timer para ocultar el reproductor
 
             init() {
                 this.render();
@@ -586,7 +647,7 @@
 
             render() {
                 const container = document.getElementById('hub-root');
-                
+
                 const linksHtml = this.data.enlaces.map(link => `
                     <a href="${link.url}" class="link-btn" target="_blank" rel="noopener noreferrer" style="--btn-color: ${link.color}">
                         <div class="btn-icon">${link.icono}</div>
@@ -650,7 +711,7 @@
 
             toggleSkills(btnElement) {
                 const wrapper = document.getElementById('skillsWrapper');
-                
+
                 if (wrapper.classList.contains('open')) {
                     wrapper.classList.remove('open');
                     btnElement.textContent = "About Me";
@@ -675,22 +736,23 @@
                 if (!avatar) return;
                 const staticSrc = this.data.photoStatic;
                 const animatedSrc = this.data.photoAnimated;
-                
+
                 // Preload
                 const img = new Image(); img.src = animatedSrc;
 
                 avatar.parentElement.addEventListener('mouseenter', () => avatar.src = animatedSrc);
                 avatar.parentElement.addEventListener('mouseleave', () => avatar.src = staticSrc);
-                avatar.parentElement.addEventListener('touchstart', () => avatar.src = animatedSrc, {passive: true});
+                avatar.parentElement.addEventListener('touchstart', () => avatar.src = animatedSrc, { passive: true });
                 avatar.parentElement.addEventListener('touchend', () => setTimeout(() => avatar.src = staticSrc, 300));
             },
 
-            /* --- STARFIELD BACKGROUND --- */
+            /* --- STARFIELD BACKGROUND WITH SHOOTING STARS --- */
             initStars() {
                 const canvas = document.getElementById('starfield');
                 const ctx = canvas.getContext('2d');
                 let width, height;
                 let stars = [];
+                let shootingStar = null;
 
                 const resize = () => {
                     width = window.innerWidth;
@@ -699,6 +761,7 @@
                     canvas.height = height;
                 };
 
+                // Estrellas estáticas de fondo
                 class Star {
                     constructor() { this.reset(); this.y = Math.random() * height; }
                     reset() {
@@ -715,20 +778,70 @@
                     draw() {
                         ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
                         ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
 
+                // ★ CLASE ESTRELLA FUGAZ
+                class ShootingStar {
+                    constructor() {
+                        this.reset();
+                    }
+                    reset() {
+                        this.x = Math.random() * width;
+                        this.y = 0;
+                        this.len = (Math.random() * 80) + 10;
+                        this.speed = (Math.random() * 10) + 6;
+                        this.size = (Math.random() * 1) + 0.1;
+                        // waitTime determines frequency. 100-300 frames wait
+                        this.waitTime = new Date().getTime() + (Math.random() * 3000 + 2000); 
+                        this.active = false;
+                    }
+                    update() {
+                        if (this.active) {
+                            this.x -= this.speed;
+                            this.y += this.speed;
+                            if (this.x < 0 || this.y >= height) {
+                                this.active = false;
+                                this.reset();
+                            }
+                        } else {
+                            if (this.waitTime < new Date().getTime()) {
+                                this.active = true;
+                            }
+                        }
+                    }
+                    draw() {
+                        if (this.active) {
+                            ctx.strokeStyle = "rgba(255, 255, 255, " + Math.random() + ")";
+                            ctx.lineWidth = this.size;
+                            ctx.beginPath();
+                            ctx.moveTo(this.x, this.y);
+                            ctx.lineTo(this.x + this.len, this.y - this.len);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
                 resize();
-                for(let i=0; i<100; i++) stars.push(new Star());
+                // Inicializar estrellas normales
+                for (let i = 0; i < 100; i++) stars.push(new Star());
+                
+                // Inicializar estrella fugaz
+                shootingStar = new ShootingStar();
 
                 function animate() {
                     ctx.clearRect(0, 0, width, height);
                     stars.forEach(s => { s.update(); s.draw(); });
+                    
+                    // Animar estrella fugaz
+                    shootingStar.update();
+                    shootingStar.draw();
+
                     requestAnimationFrame(animate);
                 }
-                
+
                 window.addEventListener('resize', resize);
                 animate();
             },
@@ -766,14 +879,14 @@
             // Lógica de click en el widget
             toggleMusicInteraction() {
                 const widget = document.getElementById('musicWidget');
-                
+
+                // Reiniciar el timer de auto-cierre cada vez que se interactúa
+                this.resetMusicTimer();
+
                 // Si está colapsado, expandir primero (UX)
                 if (!widget.classList.contains('expanded')) {
                     widget.classList.add('expanded');
-                    // Opcional: Auto-play al expandir? 
-                    // this.player.playVideo(); 
-                    // Por ahora solo expande, el segundo click reproduce.
-                    return; 
+                    return;
                 }
 
                 // Si ya está expandido, toggle play/pause
@@ -783,12 +896,27 @@
             toggleAudio() {
                 if (!this.player || typeof this.player.getPlayerState !== 'function') return;
                 this.isPlaying ? this.player.pauseVideo() : this.player.playVideo();
+                this.resetMusicTimer(); // Reiniciar timer al cambiar estado
+            },
+
+            resetMusicTimer() {
+                // Limpiar timer anterior si existe
+                if (this.interactionTimer) clearTimeout(this.interactionTimer);
+                
+                // Crear nuevo timer de 5 segundos
+                this.interactionTimer = setTimeout(() => {
+                    const widget = document.getElementById('musicWidget');
+                    // Solo colapsar si está expandido
+                    if (widget.classList.contains('expanded')) {
+                        widget.classList.remove('expanded');
+                    }
+                }, 5000); // 5000ms = 5 segundos
             },
 
             updateMusicUI(playing) {
                 const widget = document.getElementById('musicWidget');
                 const status = document.getElementById('musicStatus');
-                
+
                 if (playing) {
                     widget.classList.add('playing');
                     widget.classList.add('expanded'); // Forzar expansión al tocar
@@ -798,9 +926,6 @@
                     widget.classList.remove('playing');
                     status.textContent = "PAUSED";
                     status.style.color = "#888";
-                    
-                    // Opcional: Colapsar automáticamente después de unos segundos si se pausa
-                    // setTimeout(() => { if(!this.isPlaying) widget.classList.remove('expanded'); }, 3000);
                 }
             }
         };
@@ -809,4 +934,5 @@
         app.initMusic();
     </script>
 </body>
+
 </html>
